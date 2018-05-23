@@ -83,26 +83,9 @@ class AttentionSum(Layer):
         return None
 
     def call(self, x, mask=None):  # x word vector, shape: (?, 80,100)
-        # u * tanh(wx+b)
-        # W_w_dot_h_it = K.dot(x, self.kernel)  # (?, 80, 100) . (100, 1) --> (?, 80, 1)
-        # W_w_dot_h_it = K.squeeze(W_w_dot_h_it, -1)  # (?, 80, 1) --> (?, 80)
-        # W_w_dot_h_it = W_w_dot_h_it + self.b  # (?, 80) + (80, ) --> (?, 80)
-        # uit = K.tanh(W_w_dot_h_it)  # (?, 80)
-        # uit_dot_uw = uit * self.u  # (?, 80) * (80, ) --> (?, 80)
-        # ait = K.exp(uit_dot_uw)  # (?, 80)
-        #
-        # if mask is not None:
-        #     mask = K.cast(mask, K.floatx())
-        #     ait = mask*ait  # (?, 80)
-        #
-        # # in some cases especially in the early stages of training the sum may be almost zero
-        # # and this results in NaN's. A workaround is to add a very small positive number epsilon to the sum.
-        # # a /= K.cast(K.sum(a, axis=1, keepdims=True), K.floatx())
-        # ait /= K.cast(K.sum(ait, axis=1, keepdims=True) + K.epsilon(), K.floatx())  # (?, 80)
-        # ait = K.expand_dims(ait)  # (?, 80, 1)
         xx = x[:, :, :self.partition]
         ait = x[:, :, self.partition:]
-        weighted_input = x * ait  # (?, 80, 100) * (?, 80, 1) --> (?, 80, 100)
+        weighted_input = xx * ait  # (?, 80, 100) * (?, 80, 1) --> (?, 80, 100)
         # sentence vector si is returned
         return K.sum(weighted_input, axis=1)  # (?, 100)
 

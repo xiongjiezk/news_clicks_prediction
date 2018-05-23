@@ -13,27 +13,7 @@ from keras import backend as K
 class AttentionHotTermWeight(Layer):
 
     """
-    Attention operation, with a context/query vector, for temporal data.
-    Supports Masking.
-
-    Follows the work of Yang et al. [https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf]
-
-    "Hierarchical Attention Networks for Document Classification"
-    by using a context vector to assist the attention
-    # Input shape
-        3D tensor with shape: `(samples, steps, features)`.
-    # Output shape
-        2D tensor with shape: `(samples, features)`.
-    :param kwargs:
-    Just put it on top of an RNN Layer (GRU/LSTM/SimpleRNN) with return_sequences=True.
-    The dimensions are inferred based on the output shape of the RNN.
-
-    refer https://github.com/fchollet/keras/issues/4962
-    refer https://gist.github.com/rmdort/596e75e864295365798836d9e8636033
-
-    Example:
-        model.add(LSTM(64, return_sequences=True))
-        model.add(AttentionWithContext())
+    clac attention weight
     """
 
     def __init__(self,partition,
@@ -117,9 +97,6 @@ class AttentionHotTermWeight(Layer):
         ait /= K.cast(K.sum(ait, axis=1, keepdims=True) + K.epsilon(), K.floatx())
         ait = K.expand_dims(ait)
         return ait
-        # weighted_input = h * ait
-        # # sentence vector si is returned
-        # return K.sum(weighted_input, axis=1)
 
     def get_output_shape_for(self, input_shape):
         return input_shape[0], input_shape[1], 1

@@ -489,12 +489,7 @@ class TextClassifyDNN:
         # hot_index_bn = BatchNormalization()(hot_index_input)
         merge_layer = Concatenate(axis=2)([rnn_word, hot_index_td])
         att = AttentionHotTerm(50, name='attention_layer')(merge_layer)
-        # reshape_att = Reshape((50, 1))(att)
-        # conv1 = Conv1D(filters=50, kernel_size=5, padding='valid',
-        #                activation='relu', kernel_initializer='uniform')(reshape_att)
-        # glb_layer = GlobalMaxPooling1D()(conv1)
         out = Dense(64, activation='relu')(att)
-        # out = Dropout(0.4)(out)
         output_layer = Dense(self.num_classes, activation=self.last_layer_activation, name='output')(out)
 
         model = Model(inputs=[word_input, hot_index_input], outputs=[output_layer])

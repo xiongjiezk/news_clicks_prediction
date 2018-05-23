@@ -67,7 +67,6 @@ class TextClassifyDNNEnhance(TextClassifyDNN):
 
         model = Model(inputs=[word_input], outputs=[output_layer])
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        # model.compile(optimizer='adam', loss=self.loss, metrics=['accuracy'])
         model.summary()
         return model
 
@@ -92,7 +91,6 @@ class TextClassifyDNNEnhance(TextClassifyDNN):
 
         model = Model(inputs=[word_input, hot_index_input], outputs=[output_layer])
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        # model.compile(optimizer='adam', loss=self.loss, metrics=['accuracy'])
         model.summary()
         return model
 
